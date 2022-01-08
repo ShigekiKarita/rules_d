@@ -19,6 +19,9 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 def _is_windows(ctx):
     return ctx.configuration.host_path_separator == ";"
 
+def _is_ldc2(ctx):
+    return ctx.file._d_compiler.path.endswith('ldc2')
+
 def a_filetype(ctx, files):
     lib_suffix = ".lib" if _is_windows(ctx) else ".a"
     return [f for f in files if f.basename.endswith(lib_suffix)]
@@ -73,12 +76,31 @@ COMPILATION_MODE_FLAGS_WINDOWS = {
         "-m64", "-mscrtlib=msvcrt"],
 }
 
+COMPILATION_MODE_FLAGS_POSIX_LDC2 = {
+    "fastbuild": ["-g"],
+    "dbg": ["--d-debug", "-g"],
+    "opt": ["-checkaction=halt", "-boundscheck=safeonly", "-O"],
+}
+
+COMPILATION_MODE_FLAGS_WINDOWS_LDC2 = {
+    "fastbuild": ["-g", "-m64", "-mscrtlib=msvcrt"],
+    "dbg": ["--d-debug", "-g", "-m64", "-mscrtlib=msvcrtd"],
+    "opt": ["-checkaction=halt", "-boundscheck=safeonly", "-O",
+        "-m64", "-mscrtlib=msvcrt"],
+}
+
 def _compilation_mode_flags(ctx):
     """Returns a list of flags based on the compilation_mode."""
-    if _is_windows(ctx):
-        return COMPILATION_MODE_FLAGS_WINDOWS[ctx.var["COMPILATION_MODE"]]
-    else:
-        return COMPILATION_MODE_FLAGS_POSIX[ctx.var["COMPILATION_MODE"]]
+    if _is_ldc2(ctx):
+        if _is_windows(ctx):
+            return COMPILATION_MODE_FLAGS_WINDOWS_LDC2[ctx.var["COMPILATION_MODE"]]
+        else:
+            return COMPILATION_MODE_FLAGS_POSIX_LDC2[ctx.var["COMPILATION_MODE"]]
+    else:  # dmd
+        if _is_windows(ctx):
+            return COMPILATION_MODE_FLAGS_WINDOWS[ctx.var["COMPILATION_MODE"]]
+        else:
+            return COMPILATION_MODE_FLAGS_POSIX[ctx.var["COMPILATION_MODE"]]
 
 def _format_version(name):
     """Formats the string name to be used in a --version flag."""
