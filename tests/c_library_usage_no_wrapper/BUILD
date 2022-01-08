@@ -1,7 +1,13 @@
-load("@io_bazel_rules_d//d:d.bzl", "d_test")
+load("@io_bazel_rules_d//d:d.bzl", "d_test", "ldc2_test")
 
 d_test(
     name = "c_library_usage_no_wrapper",
+    srcs = ["c_library_usage_no_wrapper.d"],
+    deps = [":c_plus_one_lib"],
+)
+
+ldc2_test(
+    name = "c_library_usage_no_wrapper_ldc2",
     srcs = ["c_library_usage_no_wrapper.d"],
     deps = [":c_plus_one_lib"],
 )

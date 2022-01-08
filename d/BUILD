@@ -55,3 +55,39 @@ filegroup(
         ":x64_windows": ["@dmd_windows_x86_64//:druntime-import-src"],
     }),
 )
+
+filegroup(
+    name = "ldc2",
+    srcs = select({
+        ":darwin": ["@ldc2_darwin_x86_64//:ldc2"],
+        ":k8": ["@ldc2_linux_x86_64//:ldc2"],
+        ":x64_windows": ["@ldc2_windows_x86_64//:ldc2"],
+    }),
+)
+
+filegroup(
+    name = "libphobos2-ldc2",
+    srcs = select({
+        ":darwin": ["@ldc2_darwin_x86_64//:libphobos2"],
+        ":k8": ["@ldc2_linux_x86_64//:libphobos2"],
+        ":x64_windows": ["@ldc2_windows_x86_64//:libphobos2"],
+    }),
+)
+
+filegroup(
+    name = "phobos-src-ldc2",
+    srcs = select({
+        ":darwin": ["@ldc2_darwin_x86_64//:phobos-src"],
+        ":k8": ["@ldc2_linux_x86_64//:phobos-src"],
+        ":x64_windows": ["@ldc2_windows_x86_64//:phobos-src"],
+    }),
+)
+
+filegroup(
+    name = "druntime-import-src-ldc2",
+    srcs = select({
+        ":darwin": ["@ldc2_darwin_x86_64//:druntime-import-src"],
+        ":k8": ["@ldc2_linux_x86_64//:druntime-import-src"],
+        ":x64_windows": ["@ldc2_windows_x86_64//:druntime-import-src"],
+    }),
+)

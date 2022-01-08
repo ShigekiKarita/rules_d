@@ -1,4 +1,4 @@
-load("@io_bazel_rules_d//d:d.bzl", "d_test")
+load("@io_bazel_rules_d//d:d.bzl", "d_test", "ldc2_test")
 load("@io_bazel_rules_d//tests/directory_srcs:directory_generator.bzl", "directory_generator")
 
 # Provides a single declared directory File as its output in Default Info,
@@ -13,5 +13,10 @@ directory_generator(
 # expanded to the contained files.
 d_test(
     name = "directory_srcs",
+    srcs = ["dir_gen"],
+)
+
+ldc2_test(
+    name = "directory_srcs_ldc2",
     srcs = ["dir_gen"],
 )
